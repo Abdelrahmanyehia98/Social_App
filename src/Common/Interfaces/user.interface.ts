@@ -1,5 +1,11 @@
-import { GenderEnum, ProviderEnum, RoleEnum } from "..";
+import { Document } from "mongoose";
+import { GenderEnum, ProviderEnum, RoleEnum,OtpTypesEnum } from "..";
 
+interface IOTP {
+    value: string;
+    expiresAt: number;
+    otpType: OtpTypesEnum;
+}
 interface IUser extends Document {
     firstName: string;
     lastName: string;
@@ -14,6 +20,15 @@ interface IUser extends Document {
     googleId?: string;
     phoneNumber?: string;
     isVerified?: boolean;
+    OTPS?: IOTP[];
 }
 
-export  {IUser}
+interface IEmailArgument {
+    to: string,
+    cc?: string,
+    subject: string,
+    content: string,
+    attachments?: []
+}
+
+export  {IUser,IEmailArgument }

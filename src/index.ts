@@ -1,11 +1,22 @@
 import 'dotenv/config'
-import express from 'express'
+import express, { Request, Response, NextFunction } from 'express';
 import * as controllers from './Modules/controllers.index'
+import { dbconnection } from './DB/db.connection';
 const app = express()
 
 app.use(express.json());
-app.use("/users",controllers.authController);
+dbconnection();
 
+app.use("/auth",controllers.authController);
+app.use("/users",controllers.ProfileController);
+
+
+// error handling middleware
+app.use((err: Error | null, req: Request, res: Response, next: NextFunction) => {
+  const status = 500;
+  const message = 'Something went wrong';
+  res.status(status).json({ message });
+});
 
 
 const Port :number | string = process.env.PORT || 3000

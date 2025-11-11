@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { RoleEnum ,ProviderEnum,GenderEnum, IUser } from "../../Common";
+import { RoleEnum ,ProviderEnum,GenderEnum, OtpTypesEnum ,IUser } from "../../Common";
 const UserSchema = new mongoose.Schema<IUser>({
     firstName: {
         type:String,
@@ -46,7 +46,13 @@ const UserSchema = new mongoose.Schema<IUser>({
         default:ProviderEnum.LOCAL
     },
     googleId:String,
-    phoneNumber:String
+    phoneNumber:String,
+    OTPS: [{
+        value: { type: String, required: true },
+        expiresAt: { type: Date, default: Date.now() + 600000 },  
+        otpType: { type: String, enum: OtpTypesEnum, required: true },
+
+    }]
 })
 
 const UserModel = mongoose.model('User',UserSchema)

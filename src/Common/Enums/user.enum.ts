@@ -11,5 +11,10 @@ enum ProviderEnum {
     GOOGLE ='google',
     LOCAL ='local'
 }
+enum OtpTypesEnum {
+    CONFIRMATION = 'confirmation',
+    RESET_PASSWORD = 'reset-password'
+}
 
-export {RoleEnum,GenderEnum,ProviderEnum}
+
+export {RoleEnum,GenderEnum,ProviderEnum,OtpTypesEnum}
