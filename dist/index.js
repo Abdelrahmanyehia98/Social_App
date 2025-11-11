@@ -39,9 +39,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv/config");
 const express_1 = __importDefault(require("express"));
 const controllers = __importStar(require("./Modules/controllers.index"));
+const db_connection_1 = require("./DB/db.connection");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
-app.use("/users", controllers.authController);
+(0, db_connection_1.dbconnection)();
+app.use("/auth", controllers.authController);
+app.use("/users", controllers.ProfileController);
+// error handling middleware
+app.use((err, req, res, next) => {
+    const status = 500;
+    const message = 'Something went wrong';
+    res.status(status).json({ message });
+});
 const Port = process.env.PORT || 3000;
 app.listen(Port, () => {
     console.log(`Server is running on port:${Port}`);

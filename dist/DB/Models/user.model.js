@@ -52,7 +52,12 @@ const UserSchema = new mongoose_1.default.Schema({
         default: Common_1.ProviderEnum.LOCAL
     },
     googleId: String,
-    phoneNumber: String
+    phoneNumber: String,
+    OTPS: [{
+            value: { type: String, required: true },
+            expiresAt: { type: Date, default: Date.now() + 600000 },
+            otpType: { type: String, enum: Common_1.OtpTypesEnum, required: true },
+        }]
 });
 const UserModel = mongoose_1.default.model('User', UserSchema);
 exports.UserModel = UserModel;

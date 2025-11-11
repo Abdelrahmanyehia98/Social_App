@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ProviderEnum = exports.GenderEnum = exports.RoleEnum = void 0;
+exports.OtpTypesEnum = exports.ProviderEnum = exports.GenderEnum = exports.RoleEnum = void 0;
 var RoleEnum;
 (function (RoleEnum) {
     RoleEnum["USER"] = "user";
@@ -17,3 +17,8 @@ var ProviderEnum;
     ProviderEnum["GOOGLE"] = "google";
     ProviderEnum["LOCAL"] = "local";
 })(ProviderEnum || (exports.ProviderEnum = ProviderEnum = {}));
+var OtpTypesEnum;
+(function (OtpTypesEnum) {
+    OtpTypesEnum["CONFIRMATION"] = "confirmation";
+    OtpTypesEnum["RESET_PASSWORD"] = "reset-password";
+})(OtpTypesEnum || (exports.OtpTypesEnum = OtpTypesEnum = {}));
