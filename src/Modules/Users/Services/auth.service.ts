@@ -23,7 +23,7 @@ class AuthServices {
         localEmitter.emit('sendEmail',
             {
                 to: email,
-                subject: 'Verify your email',
+                subject: 'Otp for Sign up',
                 content: `Your OTP is ${otp}`
             })
 
