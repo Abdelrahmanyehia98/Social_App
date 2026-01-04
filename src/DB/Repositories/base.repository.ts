@@ -1,4 +1,4 @@
-import { FilterQuery, Model, ProjectionType, QueryOptions, UpdateQuery } from "mongoose";
+import mongoose, { FilterQuery, Model, ProjectionType, QueryOptions, UpdateQuery } from "mongoose";
 
 export abstract class BaseRepository<T> {
     constructor(private model: Model<T>) {}
@@ -18,21 +18,26 @@ export abstract class BaseRepository<T> {
     }
 
     
-    async findDocumentById(
-        id: string,
-        projection?: ProjectionType<T>,
-        options?: QueryOptions<T>
-    ): Promise<T | null> {
-        return await this.model.findById(id, projection, options);
+    async findDocumentById(id: mongoose.Types.ObjectId | string,  projection?: ProjectionType<T>, options?: QueryOptions<T>): Promise<T | null> {
+        return await this.model.findById(id, projection, options)
     }
-
     
     async findDocuments(
-        filters: FilterQuery<T> = {},
+        filters: FilterQuery<T>,
         projection?: ProjectionType<T>,
-        options?: QueryOptions<T>
+        options?: QueryOptions<T> & { populate?: any }
     ): Promise<T[]> {
-        return await this.model.find(filters, projection, options);
+        let query = this.model.find(filters, projection, options);
+
+        if (options?.populate) {
+            if (Array.isArray(options.populate)) {
+                options.populate.forEach((pop) => query.populate(pop));
+            } else {
+                query.populate(options.populate);
+            }
+        }
+
+        return await query.exec();
     }
 
     
@@ -47,18 +52,11 @@ export abstract class BaseRepository<T> {
         });
     }
 
-    
-   /* async updateMultipleDocuments(
-       filters: FilterQuery<T>,
-        updateData: UpdateQuery<T>,
-        options?: QueryOptions
-    ): Promise<{ matchedCount: number; modifiedCount: number }> {
-        const result = await this.model.updateMany(filters, updateData, options);
-        return {
-            matchedCount: result.matchedCount ?? 0,
-            modifiedCount: result.modifiedCount ?? 0,
-        };
-    }*/
+    async updateMultipleDocuments() {}
+
+    async deleteByIdDocument(id: mongoose.Types.ObjectId | string) {
+        return await this.model.findByIdAndDelete(id)
+    }
 
     
     async deleteOneDocument(filters: FilterQuery<T>): Promise<T | null> {
