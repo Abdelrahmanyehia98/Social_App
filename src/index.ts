@@ -10,7 +10,7 @@ app.use(express.json());
 dbconnection();
 
 app.use("/auth",controllers.authController);
-app.use("/users",controllers.ProfileController);
+app.use("/users",controllers.profileController);
 
 
 // error handling middleware
