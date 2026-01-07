@@ -12,7 +12,6 @@ const blackListedRepo = new BlackListedRepository(BlacklistedTokensModel);
 export const authentication = async (req: Request, res: Response, next: NextFunction) => {
     const { authorization: accessToken } = req.headers;
     if (!accessToken) return res.status(401).json({ message: 'please login first' });
-
     const [prefix, token] = accessToken.split(' ');
     if (prefix !== process.env.JWT_PREFIX) return res.status(401).json({ message: 'invalid token' });
 
@@ -26,6 +25,6 @@ export const authentication = async (req: Request, res: Response, next: NextFunc
     if (!user) return res.status(404).json({ message: 'Please register first' });
 
     (req as unknown as IRequest).loggedInUser = { user, token: decodedData as JwtPayload };
-    next();
-    return;
+    return next();
+    
 };

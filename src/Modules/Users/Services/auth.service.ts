@@ -90,10 +90,15 @@ class AuthServices {
     ConfirmEmail = async (req: Request, res: Response, next: NextFunction) => {
         const { email, otp }: { email: string; otp: string } = req.body;
 
+        if (!email || !otp) {
+            return res.status(400).json({ message: 'Email and OTP are required' });
+        }
+
         const user = await this.userRepo.findOneDocument({
             email,
-            isConfirmed: false,
+            isVerified: false, 
         });
+
         if (!user)
             return res.status(409).json({
                 message: "invalid Email",
@@ -122,6 +127,8 @@ class AuthServices {
         return res.status(201).json({ message: "User confirmed succesfully" });
     };
 
+
+    
     logOut = async (req: Request, res: Response) => {
         const { token: { jti, exp } } = (req as unknown as IRequest).loggedInUser
         const blackListedToken = await this.blackListedRepo.createNewDocument({
