@@ -29,9 +29,18 @@ class BaseRepository {
             return yield this.model.findById(id, projection, options);
         });
     }
-    findDocuments() {
-        return __awaiter(this, arguments, void 0, function* (filters = {}, projection, options) {
-            return yield this.model.find(filters, projection, options);
+    findDocuments(filters, projection, options) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let query = this.model.find(filters, projection, options);
+            if (options === null || options === void 0 ? void 0 : options.populate) {
+                if (Array.isArray(options.populate)) {
+                    options.populate.forEach((pop) => query.populate(pop));
+                }
+                else {
+                    query.populate(options.populate);
+                }
+            }
+            return yield query.exec();
         });
     }
     updateOneDocument(filters, updateData, options) {
@@ -39,17 +48,14 @@ class BaseRepository {
             return yield this.model.findOneAndUpdate(filters, updateData, Object.assign({ new: true }, options));
         });
     }
-    /* async updateMultipleDocuments(
-        filters: FilterQuery<T>,
-         updateData: UpdateQuery<T>,
-         options?: QueryOptions
-     ): Promise<{ matchedCount: number; modifiedCount: number }> {
-         const result = await this.model.updateMany(filters, updateData, options);
-         return {
-             matchedCount: result.matchedCount ?? 0,
-             modifiedCount: result.modifiedCount ?? 0,
-         };
-     }*/
+    updateMultipleDocuments() {
+        return __awaiter(this, void 0, void 0, function* () { });
+    }
+    deleteByIdDocument(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.model.findByIdAndDelete(id);
+        });
+    }
     deleteOneDocument(filters) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.model.findOneAndDelete(filters);

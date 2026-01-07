@@ -40,6 +40,7 @@ require("dotenv/config");
 const express_1 = __importDefault(require("express"));
 const controllers = __importStar(require("./Modules/controllers.index"));
 const db_connection_1 = require("./DB/db.connection");
+const Utils_1 = require("./Utils");
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
 (0, db_connection_1.dbconnection)();
@@ -47,9 +48,15 @@ app.use("/auth", controllers.authController);
 app.use("/users", controllers.ProfileController);
 // error handling middleware
 app.use((err, req, res, next) => {
-    const status = 500;
-    const message = 'Something went wrong';
-    res.status(status).json({ message });
+    if (err) {
+        if (err instanceof Utils_1.HttpException) {
+            return res.status(err.statusCode).json((0, Utils_1.FailedResponse)(err.message, err.statusCode, err.error));
+        }
+        else {
+            res.status(500).json((0, Utils_1.FailedResponse)(err.message, 500, err));
+        }
+    }
+    return next();
 });
 const Port = process.env.PORT || 3000;
 app.listen(Port, () => {
