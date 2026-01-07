@@ -22,7 +22,6 @@ app.use((err: HttpException | Error | null, req: Request, res: Response, next: N
             res.status(500).json(FailedResponse(err.message, 500, err))
         }
     }
-    return next(); 
 })
 
 

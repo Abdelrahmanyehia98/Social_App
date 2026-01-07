@@ -22,7 +22,7 @@ export class profileService {
         // user.profilePicture = Key
         // await user.save()
 
-        res.json(SuccessResponse("Profile picture uploaded successfully", 200, uploaded))
+        return res.json(SuccessResponse("Profile picture uploaded successfully", 200, uploaded))
 
     }
 
@@ -35,7 +35,7 @@ export class profileService {
         }
 
         const url = await this.s3Client.getFileWithSignedUrl(key)
-        res.json(SuccessResponse<unknown>("Signed url renewed successfully", 200, { key, url }))
+        return res.json(SuccessResponse<unknown>("Signed url renewed successfully", 200, { key, url }))
     }
 
     deleteAccount = async (req: Request, res: Response) => {
@@ -50,7 +50,7 @@ export class profileService {
             deleteResponse = await this.s3Client.DeleteFileFromS3(deletedDocument.profilePicture)
         }
 
-        res.json(SuccessResponse<unknown>('Account deleted successfully', 200, deleteResponse))
+        return res.json(SuccessResponse<unknown>('Account deleted successfully', 200, deleteResponse))
     }
 
     updateProfile = async (req: Request, res: Response) => {
@@ -72,7 +72,7 @@ export class profileService {
         { $set: updateData },
         { new: true }
         );
-        res.json(SuccessResponse<unknown>('Profile updated successfully', 200,updatedUser))
+        return res.json(SuccessResponse<unknown>('Profile updated successfully', 200,updatedUser))
     }
 
 }

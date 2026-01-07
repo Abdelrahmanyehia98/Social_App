@@ -124,7 +124,13 @@ class AuthServices {
 
         await (user as any).save();
 
-        return res.status(201).json({ message: "User confirmed succesfully" });
+        return res.status(200).json({ 
+            message: "Email verified successfully",
+            data: {
+                email: user.email,
+                isVerified: user.isVerified
+            }
+        });
     };
 
 
@@ -134,7 +140,7 @@ class AuthServices {
         const blackListedToken = await this.blackListedRepo.createNewDocument({
             tokenId: jti, expiresAt: new Date(exp || Date.now() + 600000)
         })
-        res.status(200).json({ message: 'User logged out successfully', data: { blackListedToken } })
+        return res.status(200).json({ message: 'User logged out successfully', data: { blackListedToken } })
     }
 }
 
