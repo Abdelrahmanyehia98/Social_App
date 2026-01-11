@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express"
-import { IUser, OtpTypesEnum ,IRequest} from "../../../Common"
+import { IUser, OtpTypesEnum ,IRequest, SignUpBodyType} from "../../../Common"
 import { UserRepository,BlackListedRepository } from "../../../DB/Repositories"
 import { UserModel,BlacklistedTokensModel } from "../../../DB/Models"
 import { encrypt, generateHash, localEmitter,compareHash,generateToken } from "../../../Utils"
@@ -12,7 +12,7 @@ class AuthServices {
     private blackListedRepo: BlackListedRepository = new BlackListedRepository(BlacklistedTokensModel)
     
     signUp = async(req:Request, res:Response, next:NextFunction) =>{
-        const {firstName , lastName, email, password, gender, DOB ,phoneNumber }: Partial<IUser> =req.body
+        const { firstName, lastName, email, password, gender, phoneNumber , DOB}: SignUpBodyType = req.body
         
         const isEmailExists = await this.userRepo.findOneDocument({email},'email');
         if(isEmailExists) return res.status(400).json({message:'email already exists'})
