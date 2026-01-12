@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express"
 import { IUser, OtpTypesEnum ,IRequest, SignUpBodyType} from "../../../Common"
 import { UserRepository,BlackListedRepository } from "../../../DB/Repositories"
 import { UserModel,BlacklistedTokensModel } from "../../../DB/Models"
-import { encrypt, generateHash, localEmitter,compareHash,generateToken } from "../../../Utils"
+import { encrypt, generateHash, localEmitter,compareHash,generateToken, SuccessResponse } from "../../../Utils"
 import { randomUUID } from 'crypto';
 import { SignOptions } from "jsonwebtoken"
 
@@ -42,7 +42,7 @@ class AuthServices {
             phoneNumber : encryptedPhoneNumber,
             OTPS: [confirmationOtp]
         })
-        return res.status(201).json({message : 'user created successfully',data:{newUser}})
+        return res.status(201).json(SuccessResponse<IUser>('User created successfully', 201, newUser as unknown as IUser))
 
     }
 

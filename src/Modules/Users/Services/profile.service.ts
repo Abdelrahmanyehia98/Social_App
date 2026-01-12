@@ -1,9 +1,10 @@
 import { Request, Response } from "express";
-import { BadRequestException, encrypt, generateHash, S3ClientService } from "../../../Utils";
+import { BadRequestException, S3ClientService } from "../../../Utils";
 import { IRequest, IUser } from "../../../Common";
 import { SuccessResponse } from "../../../Utils"
 import { UserModel } from "../../../DB/Models";
 import { UserRepository } from "../../../DB/Repositories";
+import { Types } from "mongoose";
 
 
 
@@ -38,42 +39,40 @@ export class profileService {
         return res.json(SuccessResponse<unknown>("Signed url renewed successfully", 200, { key, url }))
     }
 
-    deleteAccount = async (req: Request, res: Response) => {
-        const { user } = (req as unknown as IRequest).loggedInUser
-        const userId = user._id;
-        const deletedDocument = await this.userRepo.deleteByIdDocument(userId as string)
-        if (!deletedDocument) throw new BadRequestException("Account not found")
-        
-        
-        let deleteResponse;
-        if (deletedDocument?.profilePicture) {
-            deleteResponse = await this.s3Client.DeleteFileFromS3(deletedDocument.profilePicture)
-        }
+     deleteAccount = async (req: Request, res: Response) => {
 
-        return res.json(SuccessResponse<unknown>('Account deleted successfully', 200, deleteResponse))
+        const { user: { _id } } = (req as unknown as IRequest).loggedInUser
+
+        const deletedDocument = await this.userRepo.deleteByIdDocument(_id as Types.ObjectId)
+        if (!deletedDocument) throw new BadRequestException('User not found')
+
+        res.json(SuccessResponse<unknown>('Account deleted successfully', 200))
     }
 
     updateProfile = async (req: Request, res: Response) => {
-        const { user } = (req as unknown as IRequest).loggedInUser;
-        const { firstName, lastName, email, password, gender, phoneNumber, DOB } = req.body;
+        const { user: { _id } } = (req as unknown as IRequest).loggedInUser
+        const { firstName, lastName, email, password, gender, phoneNumber, DOB }: IUser = req.body
 
+        await this.userRepo.updateOneDocument(
+            { _id, email },
+            { $set: { firstName, lastName, password, gender, phoneNumber, DOB } },
+            { new: true }
+        )
 
-        const updateData: Partial<IUser> = {};
-        if (firstName) updateData.firstName = firstName;
-        if (lastName) updateData.lastName = lastName;
-        if (email) updateData.email = email;
-        if (password) updateData.password = generateHash(password);
-        if (gender) updateData.gender = gender;
-        if (phoneNumber) updateData.phoneNumber = encrypt(phoneNumber);
-        if (DOB) updateData.DOB = DOB;
-
-        const updatedUser = await this.userRepo.updateOneDocument(
-        { _id: user._id }, 
-        { $set: updateData },
-        { new: true }
-        );
-        return res.json(SuccessResponse<unknown>('Profile updated successfully', 200,updatedUser))
+        res.json(SuccessResponse<IUser>('Profile updated successfully', 200))
     }
+
+    getProfile = async (req: Request, res: Response) => {
+        const { user: { _id } } = (req as unknown as IRequest).loggedInUser
+        const user = await this.userRepo.findDocumentById(_id as Types.ObjectId)
+        if (!user) throw new BadRequestException('User not found')
+        res.json(SuccessResponse<IUser>('Profile fetched successfully', 200, user))
+    }
+
+    listUsers = async (req: Request, res: Response) => {
+        const users = await this.userRepo.findDocuments()
+        res.json(SuccessResponse<IUser[]>('Profile fetched successfully', 200, users))
+    }    
 
 }
 

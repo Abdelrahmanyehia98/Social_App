@@ -11,14 +11,14 @@ profileController.put("/update-profile", authentication, profileService.updatePr
 profileController.delete("/delete-account", authentication, profileService.deleteAccount)
 
 // get profile data
-
+profileController.get('/get-profile', authentication, profileService.getProfile)
 // upload profile picture
 profileController.post("/upload-profile", authentication, Multer().single("profilePicture"), profileService.uploadProfilePicture)
 
 // upload cover picture
 
 // list all users 
-
+profileController.get('/list-users', profileService.listUsers)
 // renew signed url 
 profileController.post("/renew-signed-url", authentication, profileService.renewSignedUrl)
 

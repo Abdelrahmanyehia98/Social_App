@@ -22,34 +22,13 @@ export abstract class BaseRepository<T> {
         return await this.model.findById(id, projection, options)
     }
     
-    async findDocuments(
-        filters: FilterQuery<T>,
-        projection?: ProjectionType<T>,
-        options?: QueryOptions<T> & { populate?: any }
-    ): Promise<T[]> {
-        let query = this.model.find(filters, projection, options);
-
-        if (options?.populate) {
-            if (Array.isArray(options.populate)) {
-                options.populate.forEach((pop) => query.populate(pop));
-            } else {
-                query.populate(options.populate);
-            }
-        }
-
-        return await query.exec();
+    async findDocuments(filters: FilterQuery<T> = {}, projection?: ProjectionType<T>, options?: QueryOptions<T>): Promise<T[] | []> {
+        return await this.model.find(filters, projection, options)
     }
 
     
-    async updateOneDocument(
-        filters: FilterQuery<T>,
-        updateData: UpdateQuery<T>,
-        options?: QueryOptions<T>
-    ): Promise<T | null> {
-        return await this.model.findOneAndUpdate(filters, updateData, {
-            new: true,
-            ...options,
-        });
+    async updateOneDocument(filters: FilterQuery<T>, updatedObject: UpdateQuery<T>, options?: QueryOptions<T>) {
+        return await this.model.findOneAndUpdate(filters, updatedObject, options)
     }
 
     async updateMultipleDocuments() {}
