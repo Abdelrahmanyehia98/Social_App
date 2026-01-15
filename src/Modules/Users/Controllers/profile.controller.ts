@@ -15,7 +15,7 @@ profileController.get('/get-profile', authentication, profileService.getProfile)
 // upload profile picture
 profileController.post("/upload-profile", authentication, Multer().single("profilePicture"), profileService.uploadProfilePicture)
 
-// upload cover picture
+// Upload cover pictures
 
 // list all users 
 profileController.get('/list-users', profileService.listUsers)
@@ -23,12 +23,15 @@ profileController.get('/list-users', profileService.listUsers)
 profileController.post("/renew-signed-url", authentication, profileService.renewSignedUrl)
 
 // send friend request
+profileController.post('/send-friend-request', authentication, profileService.sendFriendShipRequest)
 
 // list friend requests
+profileController.get('/list-friend-requests', authentication, profileService.listRequests)
 
 // respond to friend request
+profileController.patch('/respond-to-friend-request', authentication, profileService.respondToFriendShipRequest)
 
 // create group
-
+profileController.post("/create-group", authentication, profileService.createGroup)
 
 export {profileController};

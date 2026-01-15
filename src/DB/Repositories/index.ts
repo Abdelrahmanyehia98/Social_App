@@ -1,3 +1,5 @@
 export * from './base.repository'
 export * from './black-listed.repository'
 export * from './user.repository'
+export * from './friendShip.repository'
+export * from './conversation.repository'
