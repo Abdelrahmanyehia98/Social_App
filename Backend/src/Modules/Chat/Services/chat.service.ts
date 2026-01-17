@@ -1,5 +1,5 @@
 import type { Socket } from "socket.io";
-import { getIo } from "../../../Gateways/socketio.gateways";
+import { getIo } from "../../../Gateways/SocketIo/socketio.gateways";
 import { MessageRepository, ConversationRepository } from "../../../DB/Repositories";
 
 

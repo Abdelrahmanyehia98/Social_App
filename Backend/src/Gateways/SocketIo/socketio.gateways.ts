@@ -1,7 +1,7 @@
 import { Server, Socket } from "socket.io";
 import { Server as HttpServer } from "http";
-import { verifyToken } from "../Utils";
-import { ChatInitiation } from "../Modules/Chat/chat";
+import { verifyToken } from "../../Utils";
+import { ChatInitiation } from "../../Modules/Chat/chat";
 
 export const connectedSockets = new Map<string, string[]>()  // key: userId, value: socketId[]
 let io: Server | null = null

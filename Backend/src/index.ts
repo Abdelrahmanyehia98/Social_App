@@ -1,17 +1,31 @@
 import 'dotenv/config'
-
 import express, { Request, Response, NextFunction } from 'express';
+import cors from 'cors'
+import morgan from 'morgan'
+import fs from 'fs'
+
 import * as controllers from './Modules/controllers.index'
 import { dbconnection } from './DB/db.connection';
 import { HttpException,FailedResponse } from './Utils';
+import { ioIntializer } from './Gateways/SocketIo/socketio.gateways'
 const app = express()
 
-app.use(express.json());
+app.use(cors())
+app.use(express.json())
+
+
+// create a write stream (in append mode)
+let accessLogStream = fs.createWriteStream('access.log')
+// setup the logger
+app.use(morgan('dev', { stream: accessLogStream }))
+
 dbconnection();
 
-app.use("/auth",controllers.authController);
-app.use("/users",controllers.profileController);
-
+app.use('/api/auth', controllers.authController)
+app.use('/api/users', controllers.profileController)
+app.use('/api/posts', controllers.postController)
+app.use('/api/comments', controllers.commentController)
+app.use('/api/reacts', controllers.reactController)
 
 // error handling middleware
 app.use((err: HttpException | Error | null, req: Request, res: Response, next: NextFunction) => {
@@ -25,8 +39,9 @@ app.use((err: HttpException | Error | null, req: Request, res: Response, next: N
 })
 
 
-const Port :number | string = process.env.PORT || 3000
-app.listen(Port , ()=>{
-    console.log(`Server is running on port:${Port}`);
-    
+const port: number | string = process.env.PORT || 500
+const server = app.listen(port, () => {
+    console.log('Server is running on port ' + port);
 })
+
+ioIntializer(server)

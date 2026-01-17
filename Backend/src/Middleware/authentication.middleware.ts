@@ -4,9 +4,9 @@ import { JwtPayload } from "jsonwebtoken";
 import { verifyToken } from "../Utils";
 import { IRequest, IUser } from "../Common";
 import { UserRepository, BlackListedRepository } from "../DB/Repositories";
-import { UserModel, BlacklistedTokensModel } from "../DB/Models";
+import { BlacklistedTokensModel } from "../DB/Models";
 
-const userRepo = new UserRepository(UserModel);
+const userRepo = new UserRepository();
 const blackListedRepo = new BlackListedRepository(BlacklistedTokensModel);
 
 export const authentication = async (req: Request, res: Response, next: NextFunction) => {

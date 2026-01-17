@@ -1,4 +1,6 @@
 export * from './Enums/user.enum'
 export * from './Interfaces/user.interface'
+export * from './Interfaces/post.interface'
+export * from './Interfaces/comments.interface'
 export * from './Interfaces/response.interface'
 export * from './Types/validators.types'

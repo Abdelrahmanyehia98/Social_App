@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { BadRequestException, S3ClientService } from "../../../Utils";
 import { FriendShipStatusEnum, IFriendShip, IRequest, IUser } from "../../../Common";
 import { SuccessResponse } from "../../../Utils"
-import { UserModel } from "../../../DB/Models";
 import { ConversationRepository, FriendShipRepository, UserRepository } from "../../../DB/Repositories";
 import { FilterQuery, Types } from "mongoose";
 
@@ -10,7 +9,7 @@ import { FilterQuery, Types } from "mongoose";
 
 export class profileService {
     private s3Client = new S3ClientService()
-    private userRepo = new UserRepository(UserModel)
+    private userRepo = new UserRepository()
     private friendShipRepo = new FriendShipRepository()
     private conversationRepo = new ConversationRepository()
 

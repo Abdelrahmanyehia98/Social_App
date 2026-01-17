@@ -1,16 +1,10 @@
-import { Model } from "mongoose";
 import { IUser } from "../../Common";
 import { BaseRepository } from "./base.repository";
+import { UserModel } from "../Models";
 
 
 export class UserRepository extends BaseRepository<IUser> {
-    constructor(protected  _userModel: Model<IUser>) {
-        super(_userModel);
+    constructor() {
+        super(UserModel)
     }
-
-    /*async findUserByEmail(email: string): Promise<IUser | null> {
-        return this.findOneDocument({ email });
-    }*/
-
-
 }

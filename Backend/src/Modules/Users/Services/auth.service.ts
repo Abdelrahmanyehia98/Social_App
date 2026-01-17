@@ -1,14 +1,14 @@
 import { NextFunction, Request, Response } from "express"
 import { IUser, OtpTypesEnum ,IRequest, SignUpBodyType} from "../../../Common"
 import { UserRepository,BlackListedRepository } from "../../../DB/Repositories"
-import { UserModel,BlacklistedTokensModel } from "../../../DB/Models"
+import { BlacklistedTokensModel } from "../../../DB/Models"
 import { encrypt, generateHash, localEmitter,compareHash,generateToken, SuccessResponse } from "../../../Utils"
 import { randomUUID } from 'crypto';
 import { SignOptions } from "jsonwebtoken"
 
 class AuthServices {
 
-    private userRepo : UserRepository = new UserRepository(UserModel)
+    private userRepo : UserRepository = new UserRepository()
     private blackListedRepo: BlackListedRepository = new BlackListedRepository(BlacklistedTokensModel)
     
     signUp = async(req:Request, res:Response, next:NextFunction) =>{
