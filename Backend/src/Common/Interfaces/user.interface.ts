@@ -57,4 +57,14 @@ interface IConversation {
     updatedAt?: Date;
 }
 
-export  {IConversation,IFriendShip,IUser,IEmailArgument ,IRequest,IBlackListedToken }
+interface IMessage {
+    _id?: Types.ObjectId;
+    text?: string;
+    conversationId: Types.ObjectId;
+    senderId: Types.ObjectId;
+    attachments?: string[];
+    createdAt?: Date;
+    updatedAt?: Date;
+}
+
+export  {IMessage,IConversation,IFriendShip,IUser,IEmailArgument ,IRequest,IBlackListedToken }
