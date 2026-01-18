@@ -142,6 +142,105 @@ class AuthServices {
         })
         return res.status(200).json({ message: 'User logged out successfully', data: { blackListedToken } })
     }
+
+
+    forgetPassword = async (req: Request, res: Response) => {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ message: 'Email is required' });
+        }
+
+        const user = await this.userRepo.findOneDocument({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const otp = Math.floor(Math.random() * 1000000).toString();
+
+        localEmitter.emit('sendEmail', {
+            to: email,
+            subject: 'Reset Password OTP',
+            content: `Your OTP is ${otp}`
+        });
+
+        user.OTPS?.push({
+            value: generateHash(otp),
+            expiresAt: Date.now() + 10 * 60 * 1000,
+            otpType: OtpTypesEnum.RESET_PASSWORD
+        });
+
+        await (user as any).save();
+
+        return res.status(200).json({ message: 'OTP sent to email' });
+    };
+
+
+
+    resetPassword = async (req: Request, res: Response) => {
+        const { email, otp, newPassword } = req.body;
+
+        if (!email || !otp || !newPassword) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+
+        const user = await this.userRepo.findOneDocument({ email });
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const resetOtp = user.OTPS?.find(
+            (o) => o.otpType === OtpTypesEnum.RESET_PASSWORD
+        );
+
+        if (!resetOtp) {
+            return res.status(400).json({ message: 'No reset OTP found' });
+        }
+
+        if (resetOtp.expiresAt < Date.now()) {
+            return res.status(400).json({ message: 'OTP expired' });
+        }
+
+        const isOtpMatched = compareHash(otp, resetOtp.value);
+        if (!isOtpMatched) {
+            return res.status(400).json({ message: 'Invalid OTP' });
+        }
+
+        user.password = generateHash(newPassword);
+        user.OTPS = user.OTPS?.filter(
+            (o) => o.otpType !== OtpTypesEnum.RESET_PASSWORD
+        );
+
+        await (user as any).save();
+
+        return res.status(200).json({ message: 'Password reset successfully' });
+    };
+
+
+
+    updatePassword = async (req: Request, res: Response) => {
+        const { oldPassword, newPassword } = req.body;
+        const { user: { _id } } = (req as IRequest).loggedInUser;
+
+        if (!oldPassword || !newPassword) {
+            return res.status(400).json({ message: 'All fields are required' });
+        }
+
+        const user = await this.userRepo.findDocumentById(_id);
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const isPasswordMatched = compareHash(oldPassword, user.password);
+        if (!isPasswordMatched) {
+            return res.status(400).json({ message: 'Old password is incorrect' });
+        }
+
+        user.password = generateHash(newPassword);
+        await (user as any).save();
+
+        return res.status(200).json({ message: 'Password updated successfully' });
+    };
 }
 
 

@@ -11,9 +11,14 @@ authController.post('/signIn', AuthService.SignIn)
 // confirm email
 authController.post('/confirmEmail', authentication, AuthService.ConfirmEmail)
 
-// forgot password 
+// forget password
+authController.post('/forgetPassword', AuthService.forgetPassword)
 
 // reset password
+authController.post('/resetPassword', AuthService.resetPassword)
+
+// update password 
+authController.post('/updatePassword', authentication, AuthService.updatePassword)
 
 // logout
 authController.post('/logout', authentication, AuthService.logOut)
