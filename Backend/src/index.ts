@@ -8,11 +8,21 @@ import * as controllers from './Modules/controllers.index'
 import { dbconnection } from './DB/db.connection';
 import { HttpException,FailedResponse } from './Utils';
 import { ioIntializer } from './Gateways/SocketIo/socketio.gateways'
+import { createHandler } from "graphql-http";
+import { MainSchema } from "./GraphQl/main.gql";
+import { authentication } from "./Middleware";
+import { IRequest } from "./Common";
+
 const app = express()
 
 app.use(cors())
 app.use(express.json())
 
+
+// GraphQl
+app.all('/graphql', authentication, createHandler(
+    { schema: MainSchema, context: (req) => ({ user: (req.raw as IRequest).loggedInUser }) 
+}))
 
 // create a write stream (in append mode)
 let accessLogStream = fs.createWriteStream('access.log')
