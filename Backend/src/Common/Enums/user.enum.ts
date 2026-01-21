@@ -26,5 +26,17 @@ enum ConversationEnum {
     DIRECT = 'direct',
     GROUP = 'group'
 }
+enum ReactOnModelEnum {
+    POST = "Post",
+    COMMENT = "Comment"
+}
 
-export {ConversationEnum,FriendShipStatusEnum,RoleEnum,GenderEnum,ProviderEnum,OtpTypesEnum}
+enum ReactTypeEnum {
+    LIKE = "LIKE",
+    LOVE = "LOVE",
+    HAHA = "HAHA",
+    SAD = "SAD",
+    ANGRY = "ANGRY"
+}
+
+export {ReactOnModelEnum,ReactTypeEnum,ConversationEnum,FriendShipStatusEnum,RoleEnum,GenderEnum,ProviderEnum,OtpTypesEnum}

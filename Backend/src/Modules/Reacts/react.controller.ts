@@ -1,10 +1,16 @@
-import {Router} from "express";
+import { Router } from "express";
+import { authentication } from "../../Middleware";
+import reactService from "./Services/react.service";
+
 const reactController = Router();
 
-// React on post or comment
+// Add react OR update react
+reactController.post( "/add", authentication, reactService.react);
 
-// Unreact on post or comment
+// Remove react
+reactController.delete("/remove", authentication, reactService.unReact);
 
-// Get all reacts for specific post or comment
+// List reactions on post or comment
+reactController.get("/list",authentication, reactService.listReactions);
 
-export {reactController}
+export { reactController };
